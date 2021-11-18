@@ -55,6 +55,10 @@ func (s *Sqlbuilder) buildUpdate() string {
 		where = ` WHERE ` + strings.TrimSuffix(s.whereStmt, ` AND `) + ` `
 	}
 
+	if s.Dialect == "postgres" {
+		return "UPDATE " + s.updateStmt + " SET " + set + where
+	}
+
 	return "UPDATE `" + s.updateStmt + "` SET " + set + where
 }
 
@@ -72,6 +76,10 @@ func (s *Sqlbuilder) buildInsert() string {
 
 	cols = strings.TrimSuffix(cols, ", ")
 	values = strings.TrimSuffix(values, ", ")
+
+	if s.Dialect == "postgres" {
+		return "INSERT INTO " + s.insertStmt + " (" + cols + ") VALUES (" + values + ")"
+	}
 
 	return "INSERT INTO `" + s.insertStmt + "` (" + cols + ") VALUES (" + values + ")"
 }
