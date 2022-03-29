@@ -24,6 +24,7 @@ type Sqlbuilder struct {
 	limitStmt      string
 	offsetStmt     string
 	orderbyStmt    string
+	groupbyStmnt   string
 	// Insert table
 	insertStmt string
 	// Update table
@@ -214,11 +215,20 @@ func (s *Sqlbuilder) Offset(offset int) *Sqlbuilder {
 }
 
 func (s *Sqlbuilder) OrderBy(column string, diretion string) *Sqlbuilder {
-
 	if s.Dialect == "postgres" {
 		s.orderbyStmt = `ORDER BY "` + column + `" ` + diretion
 	} else {
 		s.orderbyStmt = `ORDER BY ` + column + ` ` + diretion
+	}
+
+	return s
+}
+
+func (s *Sqlbuilder) GroupBy(column string) *Sqlbuilder {
+	if s.Dialect == "postgres" {
+		s.groupbyStmnt = `GROUP BY "` + column
+	} else {
+		s.groupbyStmnt = `GROUP BY ` + column
 	}
 
 	return s
@@ -234,6 +244,7 @@ func (s *Sqlbuilder) Reset() *Sqlbuilder {
 	s.leftjoinStmt = ``
 	s.whereStmt = ``
 	s.offsetStmt = ``
+	s.groupbyStmnt = ``
 
 	return s
 }
@@ -289,6 +300,11 @@ func (s *Sqlbuilder) Build() string {
 
 	//left joins
 	s.string += s.leftjoinStmt + ` `
+
+	// group
+	if s.groupbyStmnt != `` {
+		s.string += s.groupbyStmnt + ` `
+	}
 
 	//where
 	if s.whereStmt != `` {
