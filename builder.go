@@ -225,11 +225,7 @@ func (s *Sqlbuilder) OrderBy(column string, diretion string) *Sqlbuilder {
 }
 
 func (s *Sqlbuilder) GroupBy(column string) *Sqlbuilder {
-	if s.Dialect == "postgres" {
-		s.groupbyStmnt = `GROUP BY "` + column
-	} else {
-		s.groupbyStmnt = `GROUP BY ` + column
-	}
+	s.groupbyStmnt = `GROUP BY ` + s.formatSchema(column)
 
 	return s
 }
@@ -301,14 +297,14 @@ func (s *Sqlbuilder) Build() string {
 	//left joins
 	s.string += s.leftjoinStmt + ` `
 
-	// group
-	if s.groupbyStmnt != `` {
-		s.string += s.groupbyStmnt + ` `
-	}
-
 	//where
 	if s.whereStmt != `` {
 		s.string += `WHERE ` + strings.TrimSuffix(s.whereStmt, ` AND `) + ` `
+	}
+
+	// group
+	if s.groupbyStmnt != `` {
+		s.string += s.groupbyStmnt + ` `
 	}
 
 	//orderby
