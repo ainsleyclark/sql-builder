@@ -118,7 +118,12 @@ func printInterface(value reflect.Value) (string, bool) {
 
 	switch value.Kind() {
 	case reflect.String:
-		v = "'" + sanitiseString(value.String()) + "'"
+		str := sanitiseString(value.String())
+		if strings.Contains(str, "$") || str == "?" {
+			v = str
+		} else {
+			v = "'" + str + "'"
+		}
 	case reflect.Int:
 		v = strconv.FormatInt(value.Int(), 10)
 	case reflect.Int8:
@@ -162,10 +167,6 @@ func printInterface(value reflect.Value) (string, bool) {
 	}
 
 	// Sanity checking
-	if v == "'?'" {
-		v = "?"
-	}
-
 	if v == "'NOW()'" {
 		v = "NOW()"
 	}

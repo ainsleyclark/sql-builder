@@ -38,6 +38,11 @@ func (s *Sqlbuilder) Column(column string, value interface{}) *Sqlbuilder {
 	return s
 }
 
+func (s *Sqlbuilder) Returning(field string) *Sqlbuilder {
+	s.returning = " RETURNING " + field
+	return s
+}
+
 // buildUpdate
 //
 // Creates the insert statement when `Build()` is called.
@@ -55,11 +60,16 @@ func (s *Sqlbuilder) buildUpdate() string {
 		where = ` WHERE ` + strings.TrimSuffix(s.whereStmt, ` AND `) + ` `
 	}
 
-	if s.Dialect == "postgres" {
-		return "UPDATE " + s.updateStmt + " SET " + set + where
+	returning := ""
+	if s.returning != "" {
+		returning = s.returning
 	}
 
-	return "UPDATE `" + s.updateStmt + "` SET " + set + where
+	if s.Dialect == "postgres" {
+		return "UPDATE " + s.updateStmt + " SET " + set + where + returning
+	}
+
+	return "UPDATE `" + s.updateStmt + "` SET " + set + where + returning
 }
 
 // buildInsert
@@ -77,9 +87,14 @@ func (s *Sqlbuilder) buildInsert() string {
 	cols = strings.TrimSuffix(cols, ", ")
 	values = strings.TrimSuffix(values, ", ")
 
-	if s.Dialect == "postgres" {
-		return "INSERT INTO " + s.insertStmt + " (" + cols + ") VALUES (" + values + ")"
+	returning := ""
+	if s.returning != "" {
+		returning = s.returning
 	}
 
-	return "INSERT INTO `" + s.insertStmt + "` (" + cols + ") VALUES (" + values + ")"
+	if s.Dialect == "postgres" {
+		return "INSERT INTO " + s.insertStmt + " (" + cols + ") VALUES (" + values + ")" + returning
+	}
+
+	return "INSERT INTO `" + s.insertStmt + "` (" + cols + ") VALUES (" + values + ")" + returning
 }

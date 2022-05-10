@@ -30,8 +30,9 @@ type Sqlbuilder struct {
 	// Update table
 	updateStmt string
 	// Slice of columns, key value for updates & inserts.
-	columns [][2]string
-	Dialect string //Can be postgres, mysql or (more to come)
+	columns   [][2]string
+	returning string
+	Dialect   string //Can be postgres, mysql or (more to come)
 }
 
 func New(dialect string) *Sqlbuilder {

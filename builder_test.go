@@ -17,13 +17,19 @@ var selectStatement = fmt.Sprintf(`projects.*,
 
 func Test_Group(t *testing.T) {
 
+	//q := New("postgres").
+	//	SelectRaw(selectStatement).
+	//	From("client.projects").
+	//	LeftJoin("client.tasks", "tasks", "projects.id = tasks.project_id").
+	//	GroupBy("projects.id").
+	//	Where("projects.id", "=", 1).
+	//	Limit(1)
+
 	q := New("postgres").
-		SelectRaw(selectStatement).
-		From("client.projects").
-		LeftJoin("client.tasks", "tasks", "projects.id = tasks.project_id").
-		GroupBy("projects.id").
-		Where("projects.id", "=", 1).
-		Limit(1)
+		Update("test").
+		Column("uuid", "?").
+		Column("updated_at", "NOW()").
+		Column("created_at", "NOW()")
 
 	fmt.Println(q.Build())
 }
