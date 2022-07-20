@@ -27,9 +27,8 @@ func Test_Group(t *testing.T) {
 
 	q := New("postgres").
 		Update("test").
-		Column("uuid", "?").
-		Column("updated_at", "NOW()").
-		Column("created_at", "NOW()")
+		Increment("total").
+		Where("task_id", "=", 1)
 
 	fmt.Println(q.Build())
 }

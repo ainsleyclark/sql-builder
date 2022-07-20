@@ -5,6 +5,7 @@
 package builder
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -34,6 +35,15 @@ func (s *Sqlbuilder) Column(column string, value interface{}) *Sqlbuilder {
 		val = "NULL"
 	}
 	col := [2]string{column, val}
+	s.columns = append(s.columns, col)
+	return s
+}
+
+// Increment
+//
+// Adds 1 to a column.
+func (s *Sqlbuilder) Increment(column string) *Sqlbuilder {
+	col := [2]string{column, fmt.Sprintf("%s + 1", column)}
 	s.columns = append(s.columns, col)
 	return s
 }
