@@ -48,6 +48,15 @@ func (s *Sqlbuilder) Increment(column string) *Sqlbuilder {
 	return s
 }
 
+// Decrement
+//
+// Subtracts 1 to a column.
+func (s *Sqlbuilder) Decrement(column string) *Sqlbuilder {
+	col := [2]string{column, fmt.Sprintf("%s - 1", column)}
+	s.columns = append(s.columns, col)
+	return s
+}
+
 func (s *Sqlbuilder) Returning(field string) *Sqlbuilder {
 	s.returning = " RETURNING " + field
 	return s
